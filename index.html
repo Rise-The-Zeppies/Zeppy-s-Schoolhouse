@@ -14,11 +14,13 @@
     --title-bar: #00021f;
     --accent: #039BE5;
     --accent-light: #7FD8FF;
+    --accent-rgb: 3, 155, 229;
+    --accent-light-rgb: 127, 216, 255;
     --text-primary: #ffffff;
     --text-secondary: rgba(255, 255, 255, 0.55);
     --text-muted: rgba(255, 255, 255, 0.5);
     --card-bg: linear-gradient(160deg, rgba(3, 10, 77, 0.6), rgba(0, 3, 31, 0.4));
-    --card-border: rgba(3, 155, 229, 0.25);
+    --card-border: rgba(var(--accent-rgb), 0.25);
     --panel-bg: linear-gradient(160deg, rgba(10, 16, 48, 0.65), rgba(0, 3, 25, 0.55));
     --panel-border: rgba(255, 255, 255, 0.15);
   }
@@ -31,7 +33,7 @@
     --text-secondary: rgba(10, 15, 43, 0.6);
     --text-muted: rgba(10, 15, 43, 0.55);
     --card-bg: linear-gradient(160deg, rgba(255, 255, 255, 0.75), rgba(220, 232, 247, 0.55));
-    --card-border: rgba(3, 155, 229, 0.35);
+    --card-border: rgba(var(--accent-rgb), 0.35);
     --panel-bg: linear-gradient(160deg, rgba(255, 255, 255, 0.65), rgba(230, 240, 250, 0.55));
     --panel-border: rgba(10, 15, 43, 0.12);
   }
@@ -107,7 +109,7 @@
     display: flex;
     align-items: center;
     padding-left: 24px;
-    box-shadow: 0 0 40px rgba(3, 155, 229, 0.25), 0 2px 0 rgba(3, 155, 229, 0.5);
+    box-shadow: 0 0 40px rgba(var(--accent-rgb), 0.25), 0 2px 0 rgba(var(--accent-rgb), 0.5);
     overflow: hidden;
     transition: background-color 0.5s ease;
   }
@@ -116,7 +118,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at 15% 50%, rgba(3, 155, 229, 0.18), transparent 60%);
+    background: radial-gradient(circle at 15% 50%, rgba(var(--accent-rgb), 0.18), transparent 60%);
     pointer-events: none;
   }
 
@@ -129,7 +131,7 @@
     font-weight: 100;
     font-style: italic;
     opacity: 0;
-    text-shadow: 0 0 18px rgba(127, 216, 255, 0.55), 0 0 46px rgba(3, 155, 229, 0.35);
+    text-shadow: 0 0 18px rgba(var(--accent-light-rgb), 0.55), 0 0 46px rgba(var(--accent-rgb), 0.35);
     animation: fadeIn 0.6s ease-in-out forwards, glowPulse 3.5s ease-in-out 1s infinite;
     animation-delay: 0.3s, 1s;
     transition: color 0.5s ease;
@@ -141,8 +143,8 @@
   }
 
   @keyframes glowPulse {
-    0%, 100% { text-shadow: 0 0 18px rgba(127, 216, 255, 0.55), 0 0 46px rgba(3, 155, 229, 0.35); }
-    50% { text-shadow: 0 0 28px rgba(127, 216, 255, 0.85), 0 0 70px rgba(3, 155, 229, 0.55); }
+    0%, 100% { text-shadow: 0 0 18px rgba(var(--accent-light-rgb), 0.55), 0 0 46px rgba(var(--accent-rgb), 0.35); }
+    50% { text-shadow: 0 0 28px rgba(var(--accent-light-rgb), 0.85), 0 0 70px rgba(var(--accent-rgb), 0.55); }
   }
 
   .badge {
@@ -152,7 +154,7 @@
     width: fit-content;
     margin: 36px auto 0;
     padding: 6px 18px;
-    border: 1px solid rgba(3, 155, 229, 0.5);
+    border: 1px solid rgba(var(--accent-rgb), 0.5);
     border-radius: 999px;
     color: var(--accent-light);
     font-family: 'DM Sans', Arial, Helvetica, sans-serif;
@@ -162,7 +164,7 @@
     opacity: 0;
     animation: fadeIn 0.6s ease-in-out forwards;
     animation-delay: 0.7s;
-    background: rgba(3, 155, 229, 0.06);
+    background: rgba(var(--accent-rgb), 0.06);
   }
 
   .section-label {
@@ -176,7 +178,7 @@
     font-weight: 100;
     font-style: italic;
     font-size: 34px;
-    text-shadow: 0 0 20px rgba(127, 216, 255, 0.35);
+    text-shadow: 0 0 20px rgba(var(--accent-light-rgb), 0.35);
     transition: color 0.5s ease;
   }
 
@@ -201,27 +203,6 @@
     margin: 40px auto 0;
   }
 
-  .btn-glow {
-    position: absolute;
-    inset: -18px;
-    border-radius: 20px;
-    background: conic-gradient(from 0deg, var(--accent), var(--accent-light), transparent, var(--accent));
-    filter: blur(18px);
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    animation: spinGlow 4s linear infinite;
-    pointer-events: none;
-  }
-
-  .btn-wrap:hover .btn-glow {
-    opacity: 0.75;
-  }
-
-  @keyframes spinGlow {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-
   .download-btn {
     position: relative;
     z-index: 2;
@@ -231,71 +212,158 @@
     gap: 10px;
     width: 100%;
     padding: 22px 28px;
-    background-color: #030a4d;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
     color: #ffffff;
-    border: 4px solid #000000;
-    border-radius: 10px;
+    border: 3px solid #000000;
+    border-radius: 18px;
     font-family: 'DM Sans', Arial, Helvetica, sans-serif;
     font-size: 26px;
     font-weight: 500;
     cursor: pointer;
     text-decoration: none;
     overflow: hidden;
-    transition: background-color 0.2s ease, box-shadow 0.3s ease, transform 0.15s ease;
+    isolation: isolate;
+    box-shadow:
+      inset 0 1px 1px rgba(255,255,255,0.4),
+      inset 0 -6px 14px rgba(0,0,0,0.25),
+      0 0 0 rgba(var(--accent-rgb), 0);
+    transition: box-shadow 0.3s ease, transform 0.15s ease, background 0.3s ease;
     transform: translate(var(--mx, 0px), var(--my, 0px)) scale(1) rotate(0deg);
-    box-shadow: 0 0 0 rgba(3, 155, 229, 0);
   }
 
   .btn-wrap:hover .download-btn {
-    background-color: #0a1466;
-    transform: translate(var(--mx, 0px), var(--my, 0px)) scale(1.15) rotate(-5deg);
-    box-shadow: 0 0 45px rgba(3, 155, 229, 0.55);
+    background: rgba(255, 255, 255, 0.14);
+    transform: translate(var(--mx, 0px), var(--my, 0px)) scale(1.08) rotate(-2deg);
+    box-shadow:
+      inset 0 1px 1px rgba(255,255,255,0.5),
+      inset 0 -6px 14px rgba(0,0,0,0.25),
+      0 0 25px rgba(var(--accent-rgb), 0.35);
   }
 
-  .download-btn::before,
+  .btn-spotlight {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: radial-gradient(160px circle at var(--hx, 50%) var(--hy, 50%), rgba(255,255,255,0.45), rgba(var(--accent-light-rgb), 0.15) 45%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    mix-blend-mode: overlay;
+  }
+
+  .btn-wrap:hover .btn-spotlight {
+    opacity: 1;
+  }
+
+  .btn-sheen {
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 55%;
+    height: 100%;
+    background: linear-gradient(115deg, transparent, rgba(255,255,255,0.55), transparent);
+    transform: skewX(-20deg);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .btn-wrap:hover .btn-sheen {
+    animation: sheenSweep 0.85s ease forwards;
+  }
+
+  @keyframes sheenSweep {
+    from { left: -150%; }
+    to { left: 150%; }
+  }
+
+  .btn-icon,
+  .btn-label {
+    transform: translate(var(--px, 0px), var(--py, 0px));
+    transition: transform 0.2s ease-out;
+  }
+
+  /* Nod to the old button: single shockwave ring on hover */
   .download-btn::after {
     content: '';
     position: absolute;
-    inset: -4px;
-    border-radius: 10px;
-    border: 4px solid;
+    inset: -3px;
+    border-radius: 18px;
+    border: 3px solid var(--accent);
     opacity: 0;
     pointer-events: none;
   }
 
-  .download-btn::before {
-    border-color: var(--accent);
-  }
-
-  .download-btn::after {
-    border-color: var(--accent-light);
-  }
-
-  .btn-wrap:hover .download-btn::before {
-    animation: shockwave 1.1s ease-out infinite;
-  }
-
   .btn-wrap:hover .download-btn::after {
-    animation: shockwave 1.1s ease-out infinite;
-    animation-delay: 0.55s;
+    animation: shockwave 1.3s ease-out infinite;
   }
 
   @keyframes shockwave {
+    0% { transform: scale(1); opacity: 0.9; }
+    60% { opacity: 0.4; }
+    100% { transform: scale(1.55); opacity: 0; }
+  }
+
+  /* Glass shatters on click, then reforms */
+  .download-btn.downloading {
+    background: rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .shard-grid {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .shard {
+    position: absolute;
+    width: 33.34%;
+    height: 50%;
+    background: linear-gradient(160deg, rgba(255,255,255,0.22), rgba(var(--accent-rgb), 0.18));
+    border: 1px solid rgba(255,255,255,0.3);
+    opacity: 0;
+    transition: transform 0.55s cubic-bezier(0.34, 1.2, 0.64, 1), opacity 0.55s ease;
+  }
+
+  .shard:nth-child(1) { left: 0%;      top: 0%;  --tx: -55px; --ty: -45px; --tr: -35deg; }
+  .shard:nth-child(2) { left: 33.34%;  top: 0%;  --tx: 0px;   --ty: -65px; --tr: 20deg;  }
+  .shard:nth-child(3) { left: 66.68%;  top: 0%;  --tx: 55px;  --ty: -45px; --tr: 35deg;  }
+  .shard:nth-child(4) { left: 0%;      top: 50%; --tx: -55px; --ty: 45px;  --tr: 35deg;  }
+  .shard:nth-child(5) { left: 33.34%;  top: 50%; --tx: 0px;   --ty: 65px;  --tr: -20deg; }
+  .shard:nth-child(6) { left: 66.68%;  top: 50%; --tx: 55px;  --ty: 45px;  --tr: -35deg; }
+
+  .download-btn.downloading .shard {
+    opacity: 1;
+    transition-delay: 0s, 0s;
+    animation: shardFly 0.9s cubic-bezier(0.34, 0.9, 0.64, 1) forwards;
+  }
+
+  .shard:nth-child(1) { animation-delay: 0.02s; }
+  .shard:nth-child(2) { animation-delay: 0.06s; }
+  .shard:nth-child(3) { animation-delay: 0.02s; }
+  .shard:nth-child(4) { animation-delay: 0.08s; }
+  .shard:nth-child(5) { animation-delay: 0.04s; }
+  .shard:nth-child(6) { animation-delay: 0.08s; }
+
+  @keyframes shardFly {
     0% {
-      transform: scale(1);
-      opacity: 0.9;
+      transform: translate(0, 0) rotate(0deg) scale(1);
+      opacity: 1;
     }
-    50% {
-      opacity: 0.6;
+    40% {
+      opacity: 1;
     }
     100% {
-      transform: scale(1.9);
+      transform: translate(var(--tx), var(--ty)) rotate(var(--tr)) scale(0.4);
       opacity: 0;
     }
   }
 
   .btn-icon {
     position: relative;
+    z-index: 1;
     width: 26px;
     height: 26px;
     flex-shrink: 0;
@@ -331,27 +399,15 @@
 
   .btn-label {
     position: relative;
+    z-index: 1;
     display: inline-block;
-  }
-
-  .btn-progress {
-    position: absolute;
-    inset: 0;
-    width: 0%;
-    background: linear-gradient(90deg, var(--accent), var(--accent-light));
-    z-index: -1;
-    transition: width 1.1s cubic-bezier(0.65, 0, 0.35, 1);
-  }
-
-  .download-btn.downloading .btn-progress {
-    width: 100%;
   }
 
   .particle {
     position: fixed;
     width: 6px;
     height: 6px;
-    border-radius: 50%;
+    border-radius: 50% 50% 50% 0;
     background: var(--accent-light);
     pointer-events: none;
     z-index: 60;
@@ -361,11 +417,11 @@
 
   @keyframes particleBurst {
     0% {
-      transform: translate(0, 0) scale(1);
+      transform: translate(0, 0) scale(1) rotate(0deg);
       opacity: 1;
     }
     100% {
-      transform: translate(var(--px), var(--py)) scale(0);
+      transform: translate(var(--px), var(--py)) scale(0) rotate(180deg);
       opacity: 0;
     }
   }
@@ -392,8 +448,8 @@
 
   .mod-card:hover {
     transform: translateY(-6px);
-    border-color: rgba(3, 155, 229, 0.7);
-    box-shadow: 0 12px 40px rgba(3, 155, 229, 0.25);
+    border-color: rgba(var(--accent-rgb), 0.7);
+    box-shadow: 0 12px 40px rgba(var(--accent-rgb), 0.25);
   }
 
   .mod-card h3 {
@@ -446,6 +502,104 @@
 
   .gear-btn:hover {
     transform: rotate(35deg) scale(1.08);
+  }
+
+  .brush-btn {
+    position: fixed;
+    top: 24px;
+    right: 78px;
+    z-index: 20;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.35);
+    cursor: pointer;
+    background: linear-gradient(135deg, rgba(255,255,255,0.22), rgba(255,255,255,0.04));
+    backdrop-filter: blur(14px) saturate(180%);
+    -webkit-backdrop-filter: blur(14px) saturate(180%);
+    box-shadow:
+      inset 0 1px 1px rgba(255,255,255,0.5),
+      inset 0 -1px 2px rgba(0,0,0,0.25),
+      0 4px 16px rgba(0,0,0,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: var(--text-primary);
+    transition: transform 0.25s ease, color 0.5s ease;
+  }
+
+  .brush-btn:hover {
+    transform: scale(1.1) rotate(-8deg);
+  }
+
+  /* Color swatches */
+  .swatch-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+
+  .swatch-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 4px;
+  }
+
+  .swatch-circle {
+    position: relative;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.3);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+
+  .swatch-item:hover .swatch-circle {
+    transform: scale(1.1);
+  }
+
+  .swatch-item.selected .swatch-circle {
+    border-color: #ffffff;
+  }
+
+  .swatch-check {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 16px;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+  }
+
+  .swatch-item.selected .swatch-check {
+    display: flex;
+  }
+
+  .swatch-label {
+    font-family: 'DM Sans', Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+
+  .swatch-item.disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .colorblind-note {
+    font-family: 'DM Sans', Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.5;
   }
 
   /* ===== Settings window ===== */
@@ -578,7 +732,7 @@
     width: 100%;
     height: 4px;
     border-radius: 4px;
-    background: rgba(127, 216, 255, 0.25);
+    background: rgba(var(--accent-light-rgb), 0.25);
     outline: none;
   }
 
@@ -649,7 +803,7 @@
     font-size: 14px;
   }
 
-  body.light-mode .toggle-thumb {
+  .appearance-toggle.on .toggle-thumb {
     transform: translateX(32px);
   }
 
@@ -720,7 +874,7 @@
   .settings-body input[type="text"]:focus,
   .settings-body textarea:focus {
     border-color: var(--accent);
-    background: rgba(3, 155, 229, 0.08);
+    background: rgba(var(--accent-rgb), 0.08);
   }
 
   .settings-body textarea {
@@ -801,7 +955,7 @@
   }
 
   .inbox-item:hover {
-    background: rgba(3, 155, 229, 0.1);
+    background: rgba(var(--accent-rgb), 0.1);
   }
 
   .inbox-item-top {
@@ -869,6 +1023,15 @@
 <body>
   <canvas id="stars"></canvas>
 
+  <button class="brush-btn" id="brushBtn" aria-label="Open color settings">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+      <g transform="rotate(-40 12 12)">
+        <rect x="10.5" y="1" width="3" height="9" rx="1.5"/>
+        <polygon points="9,10 15,10 15.8,12 8.2,12"/>
+        <polygon points="8.2,12 15.8,12 17,19 12,22 7,19"/>
+      </g>
+    </svg>
+  </button>
   <button class="gear-btn" id="gearBtn" aria-label="Open settings">⚙</button>
 
   <div class="settings-window" id="settingsWindow">
@@ -899,6 +1062,61 @@
   </div>
 
   <div class="minimized-bar" id="minimizedBar">Settings</div>
+
+  <div class="settings-window" id="brushWindow">
+    <div class="settings-titlebar" id="brushTitlebar">
+      <div class="traffic-lights">
+        <button class="traffic-btn close" id="brushClose" aria-label="Close"><span>×</span></button>
+      </div>
+      <span class="settings-title">Brush</span>
+    </div>
+    <div class="settings-body">
+      <div class="settings-row">
+        <div class="settings-row-label">Accent Color</div>
+        <div class="swatch-grid" id="swatchGrid">
+          <button class="swatch-item" data-color="blue" data-main="#039BE5" data-light="#7FD8FF">
+            <span class="swatch-circle" style="background:#039BE5;"><span class="swatch-check">✓</span></span>
+            <span class="swatch-label">Blue</span>
+          </button>
+          <button class="swatch-item" data-color="red" data-main="#E53935" data-light="#FF8A80">
+            <span class="swatch-circle" style="background:#E53935;"><span class="swatch-check">✓</span></span>
+            <span class="swatch-label">Red</span>
+          </button>
+          <button class="swatch-item" data-color="green" data-main="#43A047" data-light="#A5D6A7">
+            <span class="swatch-circle" style="background:#43A047;"><span class="swatch-check">✓</span></span>
+            <span class="swatch-label">Green</span>
+          </button>
+          <button class="swatch-item" data-color="purple" data-main="#8E24AA" data-light="#CE93D8">
+            <span class="swatch-circle" style="background:#8E24AA;"><span class="swatch-check">✓</span></span>
+            <span class="swatch-label">Purple</span>
+          </button>
+          <button class="swatch-item" data-color="orange" data-main="#FB8C00" data-light="#FFCC80">
+            <span class="swatch-circle" style="background:#FB8C00;"><span class="swatch-check">✓</span></span>
+            <span class="swatch-label">Orange</span>
+          </button>
+          <button class="swatch-item" data-color="pink" data-main="#D81B60" data-light="#F48FB1">
+            <span class="swatch-circle" style="background:#D81B60;"><span class="swatch-check">✓</span></span>
+            <span class="swatch-label">Pink</span>
+          </button>
+          <button class="swatch-item" data-color="grey" data-main="#757575" data-light="#BDBDBD">
+            <span class="swatch-circle" style="background:#757575;"><span class="swatch-check">✓</span></span>
+            <span class="swatch-label">Grey</span>
+          </button>
+          <button class="swatch-item" data-color="brown" data-main="#6D4C41" data-light="#A1887F">
+            <span class="swatch-circle" style="background:#6D4C41;"><span class="swatch-check">✓</span></span>
+            <span class="swatch-label">Brown</span>
+          </button>
+        </div>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-label">Colorblind Mode (Tritanopia)</div>
+        <button class="appearance-toggle" id="colorblindToggle" aria-label="Toggle tritanopia-friendly palette">
+          <span class="toggle-thumb" id="colorblindThumb">👁</span>
+        </button>
+        <div class="colorblind-note">Hides green from the palette, since it's hard to tell apart from other colors. Every swatch is labeled with text too, not just color.</div>
+      </div>
+    </div>
+  </div>
 
   <div class="settings-window" id="feedbackWindow">
     <div class="settings-titlebar" id="feedbackTitlebar">
@@ -942,9 +1160,17 @@
   <span class="tagline">Custom mods, built with care, shipped for free.</span>
 
   <div class="btn-wrap">
-    <div class="btn-glow"></div>
     <a href="Zeppy's%20Schoolhouse%20V2.zip" download class="download-btn" id="downloadBtn">
-      <div class="btn-progress"></div>
+      <div class="btn-spotlight"></div>
+      <div class="btn-sheen"></div>
+      <div class="shard-grid">
+        <div class="shard"></div>
+        <div class="shard"></div>
+        <div class="shard"></div>
+        <div class="shard"></div>
+        <div class="shard"></div>
+        <div class="shard"></div>
+      </div>
       <span class="btn-icon">
         <svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 4v12"/>
@@ -1042,11 +1268,21 @@
       const pull = 0.15;
       downloadBtn.style.setProperty('--mx', (relX * pull) + 'px');
       downloadBtn.style.setProperty('--my', (relY * pull) + 'px');
+
+      const hx = ((e.clientX - rect.left) / rect.width) * 100;
+      const hy = ((e.clientY - rect.top) / rect.height) * 100;
+      downloadBtn.style.setProperty('--hx', hx + '%');
+      downloadBtn.style.setProperty('--hy', hy + '%');
+
+      downloadBtn.style.setProperty('--px', (-relX * 0.05) + 'px');
+      downloadBtn.style.setProperty('--py', (-relY * 0.05) + 'px');
     });
 
     btnWrap.addEventListener('mouseleave', () => {
       downloadBtn.style.setProperty('--mx', '0px');
       downloadBtn.style.setProperty('--my', '0px');
+      downloadBtn.style.setProperty('--px', '0px');
+      downloadBtn.style.setProperty('--py', '0px');
     });
 
     function spawnParticles(originX, originY) {
@@ -1090,7 +1326,139 @@
       document.body.classList.toggle('light-mode');
       const isLight = document.body.classList.contains('light-mode');
       toggleThumb.textContent = isLight ? '☀' : '☾';
+      themeToggle.classList.toggle('on', isLight);
+      applyFullTheme(currentMain, currentLight);
     });
+
+    /* ---------- Brush menu: accent color + colorblind mode ---------- */
+    const brushBtn = document.getElementById('brushBtn');
+    const brushWindow = document.getElementById('brushWindow');
+    const brushTitlebar = document.getElementById('brushTitlebar');
+    const brushClose = document.getElementById('brushClose');
+    const swatchItems = document.querySelectorAll('.swatch-item');
+    const colorblindToggle = document.getElementById('colorblindToggle');
+    const colorblindThumb = document.getElementById('colorblindThumb');
+    const greenSwatch = document.querySelector('.swatch-item[data-color="green"]');
+
+    const brushWin = makeWindow({
+      el: brushWindow,
+      titlebar: brushTitlebar,
+      closeBtn: brushClose,
+      top: 90,
+      left: Math.max(20, window.innerWidth - 90 - 340 - 340)
+    });
+
+    brushBtn.addEventListener('click', () => {
+      if (brushWindow.classList.contains('open')) return;
+      brushWin.open();
+    });
+
+    function hexToRgb(hex) {
+      const clean = hex.replace('#', '');
+      const r = parseInt(clean.substring(0, 2), 16);
+      const g = parseInt(clean.substring(2, 4), 16);
+      const b = parseInt(clean.substring(4, 6), 16);
+      return `${r}, ${g}, ${b}`;
+    }
+
+    function hexToHsl(hex) {
+      const clean = hex.replace('#', '');
+      let r = parseInt(clean.substring(0, 2), 16) / 255;
+      let g = parseInt(clean.substring(2, 4), 16) / 255;
+      let b = parseInt(clean.substring(4, 6), 16) / 255;
+      const max = Math.max(r, g, b), min = Math.min(r, g, b);
+      let h, s, l = (max + min) / 2;
+      if (max === min) {
+        h = s = 0;
+      } else {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+          case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+          case g: h = (b - r) / d + 2; break;
+          case b: h = (r - g) / d + 4; break;
+        }
+        h *= 60;
+      }
+      return { h, s: s * 100, l: l * 100 };
+    }
+
+    function hslToRgbStr(h, s, l) {
+      s /= 100; l /= 100;
+      const k = n => (n + h / 30) % 12;
+      const a = s * Math.min(l, 1 - l);
+      const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+      const r = Math.round(f(0) * 255), g = Math.round(f(8) * 255), b = Math.round(f(4) * 255);
+      return `${r}, ${g}, ${b}`;
+    }
+
+    let currentMain = '#FB8C00';
+    let currentLight = '#FFCC80';
+
+    function applyFullTheme(main, light) {
+      currentMain = main;
+      currentLight = light;
+
+      document.body.style.setProperty('--accent', main);
+      document.body.style.setProperty('--accent-light', light);
+      document.body.style.setProperty('--accent-rgb', hexToRgb(main));
+      document.body.style.setProperty('--accent-light-rgb', hexToRgb(light));
+
+      const { h } = hexToHsl(main);
+      const isLight = document.body.classList.contains('light-mode');
+
+      if (isLight) {
+        document.body.style.setProperty('--bg-start', `hsl(${h}, 55%, 96%)`);
+        document.body.style.setProperty('--bg-end', `hsl(${h}, 60%, 92%)`);
+        document.body.style.setProperty('--title-bar', `hsl(${h}, 40%, 99%)`);
+        document.body.style.setProperty('--card-bg', `linear-gradient(160deg, rgba(255,255,255,0.75), rgba(${hslToRgbStr(h, 55, 90)}, 0.55))`);
+        document.body.style.setProperty('--panel-bg', `linear-gradient(160deg, rgba(255,255,255,0.65), rgba(${hslToRgbStr(h, 55, 92)}, 0.55))`);
+        document.body.style.setProperty('--panel-border', `rgba(${hexToRgb(main)}, 0.2)`);
+      } else {
+        document.body.style.setProperty('--bg-start', `hsl(${h}, 65%, 6%)`);
+        document.body.style.setProperty('--bg-end', `hsl(${h}, 70%, 3%)`);
+        document.body.style.setProperty('--title-bar', `hsl(${h}, 70%, 6%)`);
+        document.body.style.setProperty('--card-bg', `linear-gradient(160deg, rgba(${hslToRgbStr(h, 55, 20)}, 0.6), rgba(${hslToRgbStr(h, 70, 6)}, 0.4))`);
+        document.body.style.setProperty('--panel-bg', `linear-gradient(160deg, rgba(${hslToRgbStr(h, 45, 16)}, 0.65), rgba(${hslToRgbStr(h, 70, 5)}, 0.55))`);
+        document.body.style.setProperty('--panel-border', `rgba(${hexToRgb(main)}, 0.25)`);
+      }
+    }
+
+    function selectSwatch(colorName) {
+      swatchItems.forEach((item) => {
+        item.classList.toggle('selected', item.dataset.color === colorName);
+      });
+    }
+
+    swatchItems.forEach((item) => {
+      item.addEventListener('click', () => {
+        if (item.classList.contains('disabled')) return;
+        applyFullTheme(item.dataset.main, item.dataset.light);
+        selectSwatch(item.dataset.color);
+      });
+    });
+
+    colorblindToggle.addEventListener('click', () => {
+      const isOn = colorblindToggle.classList.toggle('on');
+      colorblindThumb.textContent = isOn ? '✓' : '👁';
+
+      if (isOn) {
+        greenSwatch.classList.add('disabled');
+        // If green was selected, fall back to blue automatically
+        if (greenSwatch.classList.contains('selected')) {
+          const fallbackSwatch = document.querySelector('.swatch-item[data-color="orange"]');
+          applyFullTheme(fallbackSwatch.dataset.main, fallbackSwatch.dataset.light);
+          selectSwatch('orange');
+        }
+      } else {
+        greenSwatch.classList.remove('disabled');
+      }
+    });
+
+    // Default selected swatch: orange
+    const defaultSwatch = document.querySelector('.swatch-item[data-color="orange"]');
+    applyFullTheme(defaultSwatch.dataset.main, defaultSwatch.dataset.light);
+    selectSwatch('orange');
 
     /* ---------- Volume / Brightness sliders ---------- */
     const volumeSlider = document.getElementById('volumeSlider');
