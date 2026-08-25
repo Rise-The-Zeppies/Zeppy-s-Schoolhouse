@@ -6,7 +6,7 @@
 <title>Zeppy's Vault</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@1,100;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@1,100;1,400;0,400;0,500&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg-start: #00031f;
@@ -19,6 +19,8 @@
     --text-muted: rgba(255, 255, 255, 0.5);
     --card-bg: linear-gradient(160deg, rgba(3, 10, 77, 0.6), rgba(0, 3, 31, 0.4));
     --card-border: rgba(3, 155, 229, 0.25);
+    --panel-bg: linear-gradient(160deg, rgba(10, 16, 48, 0.65), rgba(0, 3, 25, 0.55));
+    --panel-border: rgba(255, 255, 255, 0.15);
   }
 
   body.light-mode {
@@ -30,6 +32,8 @@
     --text-muted: rgba(10, 15, 43, 0.55);
     --card-bg: linear-gradient(160deg, rgba(255, 255, 255, 0.75), rgba(220, 232, 247, 0.55));
     --card-border: rgba(3, 155, 229, 0.35);
+    --panel-bg: linear-gradient(160deg, rgba(255, 255, 255, 0.65), rgba(230, 240, 250, 0.55));
+    --panel-border: rgba(10, 15, 43, 0.12);
   }
 
   * {
@@ -49,6 +53,7 @@
     position: relative;
     overflow-x: hidden;
     transition: background-color 0.5s ease;
+    filter: brightness(var(--page-brightness, 1));
   }
 
   @keyframes bgShift {
@@ -189,6 +194,34 @@
     transition: color 0.5s ease;
   }
 
+  .btn-wrap {
+    position: relative;
+    z-index: 2;
+    width: 300px;
+    margin: 40px auto 0;
+  }
+
+  .btn-glow {
+    position: absolute;
+    inset: -18px;
+    border-radius: 20px;
+    background: conic-gradient(from 0deg, var(--accent), var(--accent-light), transparent, var(--accent));
+    filter: blur(18px);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    animation: spinGlow 4s linear infinite;
+    pointer-events: none;
+  }
+
+  .btn-wrap:hover .btn-glow {
+    opacity: 0.75;
+  }
+
+  @keyframes spinGlow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
   .download-btn {
     position: relative;
     z-index: 2;
@@ -196,8 +229,7 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    width: 300px;
-    margin: 40px auto 0;
+    width: 100%;
     padding: 22px 28px;
     background-color: #030a4d;
     color: #ffffff;
@@ -208,14 +240,15 @@
     font-weight: 500;
     cursor: pointer;
     text-decoration: none;
-    transition: transform 0.3s ease, background-color 0.2s ease, box-shadow 0.3s ease;
-    transform: scale(1) rotate(0deg);
+    overflow: hidden;
+    transition: background-color 0.2s ease, box-shadow 0.3s ease, transform 0.15s ease;
+    transform: translate(var(--mx, 0px), var(--my, 0px)) scale(1) rotate(0deg);
     box-shadow: 0 0 0 rgba(3, 155, 229, 0);
   }
 
-  .download-btn:hover {
+  .btn-wrap:hover .download-btn {
     background-color: #0a1466;
-    transform: scale(1.15) rotate(-5deg);
+    transform: translate(var(--mx, 0px), var(--my, 0px)) scale(1.15) rotate(-5deg);
     box-shadow: 0 0 45px rgba(3, 155, 229, 0.55);
   }
 
@@ -238,11 +271,11 @@
     border-color: var(--accent-light);
   }
 
-  .download-btn:hover::before {
+  .btn-wrap:hover .download-btn::before {
     animation: shockwave 1.1s ease-out infinite;
   }
 
-  .download-btn:hover::after {
+  .btn-wrap:hover .download-btn::after {
     animation: shockwave 1.1s ease-out infinite;
     animation-delay: 0.55s;
   }
@@ -257,6 +290,82 @@
     }
     100% {
       transform: scale(1.9);
+      opacity: 0;
+    }
+  }
+
+  .btn-icon {
+    position: relative;
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+  }
+
+  .btn-icon svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+
+  .icon-arrow {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  .icon-check {
+    opacity: 0;
+    transform: scale(0.4) rotate(-20deg);
+  }
+
+  .download-btn.downloading .icon-arrow {
+    opacity: 0;
+    transform: translateY(6px) scale(0.6);
+  }
+
+  .download-btn.downloading .icon-check {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+
+  .btn-label {
+    position: relative;
+    display: inline-block;
+  }
+
+  .btn-progress {
+    position: absolute;
+    inset: 0;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-light));
+    z-index: -1;
+    transition: width 1.1s cubic-bezier(0.65, 0, 0.35, 1);
+  }
+
+  .download-btn.downloading .btn-progress {
+    width: 100%;
+  }
+
+  .particle {
+    position: fixed;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-light);
+    pointer-events: none;
+    z-index: 60;
+    box-shadow: 0 0 8px var(--accent-light);
+    animation: particleBurst 0.8s ease-out forwards;
+  }
+
+  @keyframes particleBurst {
+    0% {
+      transform: translate(0, 0) scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(var(--px), var(--py)) scale(0);
       opacity: 0;
     }
   }
@@ -309,12 +418,192 @@
     height: 500px;
   }
 
-  /* Liquid glass theme toggle */
-  .theme-toggle {
+  /* ===== Gear button ===== */
+  .gear-btn {
     position: fixed;
     top: 24px;
     right: 24px;
-    z-index: 10;
+    z-index: 20;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.35);
+    cursor: pointer;
+    background: linear-gradient(135deg, rgba(255,255,255,0.22), rgba(255,255,255,0.04));
+    backdrop-filter: blur(14px) saturate(180%);
+    -webkit-backdrop-filter: blur(14px) saturate(180%);
+    box-shadow:
+      inset 0 1px 1px rgba(255,255,255,0.5),
+      inset 0 -1px 2px rgba(0,0,0,0.25),
+      0 4px 16px rgba(0,0,0,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 19px;
+    color: var(--text-primary);
+    transition: transform 0.25s ease, color 0.5s ease;
+  }
+
+  .gear-btn:hover {
+    transform: rotate(35deg) scale(1.08);
+  }
+
+  /* ===== Settings window ===== */
+  .settings-window {
+    position: fixed;
+    top: 90px;
+    right: 90px;
+    z-index: 50;
+    width: 320px;
+    border-radius: 14px;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    backdrop-filter: blur(22px) saturate(180%);
+    -webkit-backdrop-filter: blur(22px) saturate(180%);
+    box-shadow:
+      inset 0 1px 1px rgba(255,255,255,0.25),
+      0 20px 60px rgba(0,0,0,0.5);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  .settings-window.open {
+    display: flex;
+  }
+
+  .settings-window.fullscreen {
+    top: 20px !important;
+    left: 20px !important;
+    right: 20px;
+    bottom: 20px;
+    width: auto !important;
+    height: auto !important;
+  }
+
+  .settings-titlebar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 14px;
+    cursor: grab;
+    border-bottom: 1px solid var(--panel-border);
+    position: relative;
+  }
+
+  .settings-titlebar:active {
+    cursor: grabbing;
+  }
+
+  .traffic-lights {
+    display: flex;
+    gap: 8px;
+  }
+
+  .traffic-btn {
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    position: relative;
+    box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.15);
+  }
+
+  .traffic-btn.close { background: #ff5f57; }
+  .traffic-btn.minimize { background: #febc2e; }
+  .traffic-btn.fullscreen { background: #28c840; }
+
+  .traffic-btn span {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    color: rgba(0,0,0,0.5);
+    opacity: 0;
+  }
+
+  .settings-titlebar:hover .traffic-btn span {
+    opacity: 1;
+  }
+
+  .settings-title {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-family: 'DM Sans', Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    pointer-events: none;
+  }
+
+  .settings-body {
+    padding: 20px 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .settings-row {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .settings-row-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: 'DM Sans', Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    transition: color 0.5s ease;
+  }
+
+  .settings-row-label span.value {
+    font-weight: 400;
+    color: var(--text-secondary);
+    font-size: 12px;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    border-radius: 4px;
+    background: rgba(127, 216, 255, 0.25);
+    outline: none;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: linear-gradient(160deg, #ffffff, var(--accent-light));
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    cursor: pointer;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border: none;
+    border-radius: 50%;
+    background: linear-gradient(160deg, #ffffff, var(--accent-light));
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    cursor: pointer;
+  }
+
+  /* Liquid glass appearance toggle (inside panel) */
+  .appearance-toggle {
     width: 68px;
     height: 36px;
     border-radius: 999px;
@@ -327,14 +616,12 @@
     box-shadow:
       inset 0 1px 1px rgba(255,255,255,0.6),
       inset 0 -1px 2px rgba(0,0,0,0.25),
-      0 4px 16px rgba(0,0,0,0.35);
-    display: flex;
-    align-items: center;
+      0 4px 16px rgba(0,0,0,0.25);
     position: relative;
-    transition: background 0.4s ease;
+    align-self: flex-start;
   }
 
-  .theme-toggle::before {
+  .appearance-toggle::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -355,7 +642,7 @@
       inset 0 1px 2px rgba(255,255,255,0.9),
       inset 0 -2px 3px rgba(0,0,0,0.15),
       0 3px 8px rgba(0,0,0,0.35);
-    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.4s ease;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -365,14 +652,286 @@
   body.light-mode .toggle-thumb {
     transform: translateX(32px);
   }
+
+  /* Minimized dock bar */
+  .minimized-bar {
+    position: fixed;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%) translateY(120%);
+    z-index: 50;
+    padding: 10px 22px;
+    border-radius: 999px;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    backdrop-filter: blur(18px) saturate(180%);
+    -webkit-backdrop-filter: blur(18px) saturate(180%);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    color: var(--text-primary);
+    font-family: 'DM Sans', Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.5s ease;
+  }
+
+  .minimized-bar.shown {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* Feedback card is clickable */
+  #feedbackCard {
+    cursor: pointer;
+  }
+
+  /* Feedback form fields */
+  .settings-body label.field-label {
+    display: block;
+    font-family: 'DM Sans', Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+    transition: color 0.5s ease;
+  }
+
+  .settings-body input[type="email"],
+  .settings-body input[type="text"],
+  .settings-body textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--panel-border);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-primary);
+    font-family: 'DM Sans', Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+
+  body.light-mode .settings-body input[type="email"],
+  body.light-mode .settings-body input[type="text"],
+  body.light-mode .settings-body textarea {
+    background: rgba(10, 15, 43, 0.05);
+  }
+
+  .settings-body input[type="email"]:focus,
+  .settings-body input[type="text"]:focus,
+  .settings-body textarea:focus {
+    border-color: var(--accent);
+    background: rgba(3, 155, 229, 0.08);
+  }
+
+  .settings-body textarea {
+    resize: vertical;
+    min-height: 90px;
+    font-family: 'DM Sans', Arial, Helvetica, sans-serif;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 4px;
+  }
+
+  .form-btn {
+    padding: 9px 18px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    transition: transform 0.15s ease, background 0.2s ease;
+  }
+
+  .form-btn.cancel {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+  }
+
+  body.light-mode .form-btn.cancel {
+    background: rgba(10, 15, 43, 0.08);
+  }
+
+  .form-btn.cancel:hover {
+    background: rgba(255, 255, 255, 0.18);
+  }
+
+  .form-btn.submit {
+    background: var(--accent);
+    color: #ffffff;
+  }
+
+  .form-btn.submit:hover {
+    background: var(--accent-light);
+    transform: translateY(-1px);
+  }
+
+  /* Inbox view */
+  .inbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 320px;
+    overflow-y: auto;
+  }
+
+  .inbox-empty {
+    font-family: 'DM Sans', Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 20px 0;
+  }
+
+  .inbox-item {
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--panel-border);
+    background: rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  body.light-mode .inbox-item {
+    background: rgba(10, 15, 43, 0.04);
+  }
+
+  .inbox-item:hover {
+    background: rgba(3, 155, 229, 0.1);
+  }
+
+  .inbox-item-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .inbox-item-title {
+    font-family: 'DM Sans', Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  .inbox-item-date {
+    font-family: 'DM Sans', Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+
+  .inbox-item-email {
+    font-family: 'DM Sans', Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    color: var(--accent-light);
+    margin-top: 2px;
+  }
+
+  .inbox-item-desc {
+    font-family: 'DM Sans', Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+
+  .inbox-item-desc.collapsed {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .inbox-item-delete {
+    margin-top: 8px;
+    background: none;
+    border: none;
+    color: #ff8a80;
+    font-family: 'DM Sans', Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .owner-hint {
+    font-family: 'DM Sans', Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    color: var(--text-secondary);
+    text-align: center;
+  }
 </style>
 </head>
 <body>
   <canvas id="stars"></canvas>
 
-  <button class="theme-toggle" id="themeToggle" aria-label="Toggle light and dark mode">
-    <span class="toggle-thumb" id="toggleThumb">☾</span>
-  </button>
+  <button class="gear-btn" id="gearBtn" aria-label="Open settings">⚙</button>
+
+  <div class="settings-window" id="settingsWindow">
+    <div class="settings-titlebar" id="settingsTitlebar">
+      <div class="traffic-lights">
+        <button class="traffic-btn close" id="btnClose" aria-label="Close"><span>×</span></button>
+        <button class="traffic-btn minimize" id="btnMinimize" aria-label="Minimize"><span>−</span></button>
+        <button class="traffic-btn fullscreen" id="btnFullscreen" aria-label="Fullscreen"><span>⤢</span></button>
+      </div>
+      <span class="settings-title">Settings</span>
+    </div>
+    <div class="settings-body">
+      <div class="settings-row">
+        <div class="settings-row-label">Liquid Glass Mode</div>
+        <button class="appearance-toggle" id="themeToggle" aria-label="Toggle light and dark mode">
+          <span class="toggle-thumb" id="toggleThumb">☾</span>
+        </button>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-label">Volume <span class="value" id="volumeValue">70%</span></div>
+        <input type="range" id="volumeSlider" min="0" max="100" value="70">
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-label">Brightness <span class="value" id="brightnessValue">100%</span></div>
+        <input type="range" id="brightnessSlider" min="50" max="130" value="100">
+      </div>
+    </div>
+  </div>
+
+  <div class="minimized-bar" id="minimizedBar">Settings</div>
+
+  <div class="settings-window" id="feedbackWindow">
+    <div class="settings-titlebar" id="feedbackTitlebar">
+      <div class="traffic-lights">
+        <button class="traffic-btn close" id="fbClose" aria-label="Close"><span>×</span></button>
+      </div>
+      <span class="settings-title" id="feedbackWindowTitle">Feedback</span>
+    </div>
+    <div class="settings-body" id="fbFormView">
+      <div class="settings-row">
+        <label class="field-label" for="fbEmail">Your email</label>
+        <input type="email" id="fbEmail" placeholder="you@example.com" required>
+      </div>
+      <div class="settings-row">
+        <label class="field-label" for="fbTitle">Title (optional)</label>
+        <input type="text" id="fbTitle" placeholder="Short summary">
+      </div>
+      <div class="settings-row">
+        <label class="field-label" for="fbDescription">Description</label>
+        <textarea id="fbDescription" placeholder="What's the bug, or what's your idea?" required></textarea>
+      </div>
+      <div class="form-actions">
+        <button class="form-btn cancel" id="fbCancel">Cancel</button>
+        <button class="form-btn submit" id="fbSubmit">Submit</button>
+      </div>
+    </div>
+    <div class="settings-body" id="fbInboxView" style="display: none;">
+      <div class="inbox-list" id="inboxList"></div>
+      <div class="form-actions">
+        <button class="form-btn cancel" id="fbBackToForm">Back to form</button>
+      </div>
+    </div>
+  </div>
 
   <div class="title-bar">
     <span class="title-text">Zeppy's Vault</span>
@@ -382,7 +941,23 @@
   <span class="section-label">Zeppy's Schoolhouse</span>
   <span class="tagline">Custom mods, built with care, shipped for free.</span>
 
-  <a href="Zeppy's%20Schoolhouse%20V2.zip" download class="download-btn">Download</a>
+  <div class="btn-wrap">
+    <div class="btn-glow"></div>
+    <a href="Zeppy's%20Schoolhouse%20V2.zip" download class="download-btn" id="downloadBtn">
+      <div class="btn-progress"></div>
+      <span class="btn-icon">
+        <svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 4v12"/>
+          <path d="M6 12l6 6 6-6"/>
+          <path d="M5 21h14"/>
+        </svg>
+        <svg class="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 13l4 4L19 7"/>
+        </svg>
+      </span>
+      <span class="btn-label" id="btnLabel">Download</span>
+    </a>
+  </div>
 
   <div class="mods-grid">
     <div class="mod-card">
@@ -393,7 +968,7 @@
       <h3>More coming soon</h3>
       <p>New mods are in the works. Check back for updates.</p>
     </div>
-    <div class="mod-card">
+    <div class="mod-card" id="feedbackCard">
       <h3>Got feedback?</h3>
       <p>Found a bug or have an idea? Reach out and let me know.</p>
     </div>
@@ -402,6 +977,7 @@
   <div class="spacer"></div>
 
   <script>
+    /* ---------- Starfield ---------- */
     const canvas = document.getElementById('stars');
     const ctx = canvas.getContext('2d');
     let stars = [];
@@ -454,7 +1030,59 @@
     }
     draw();
 
-    // Theme toggle
+    /* ---------- Download button: magnetic hover + click sequence ---------- */
+    const btnWrap = document.querySelector('.btn-wrap');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const btnLabel = document.getElementById('btnLabel');
+
+    btnWrap.addEventListener('mousemove', (e) => {
+      const rect = downloadBtn.getBoundingClientRect();
+      const relX = e.clientX - rect.left - rect.width / 2;
+      const relY = e.clientY - rect.top - rect.height / 2;
+      const pull = 0.15;
+      downloadBtn.style.setProperty('--mx', (relX * pull) + 'px');
+      downloadBtn.style.setProperty('--my', (relY * pull) + 'px');
+    });
+
+    btnWrap.addEventListener('mouseleave', () => {
+      downloadBtn.style.setProperty('--mx', '0px');
+      downloadBtn.style.setProperty('--my', '0px');
+    });
+
+    function spawnParticles(originX, originY) {
+      const count = 14;
+      for (let i = 0; i < count; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        const angle = (Math.PI * 2 * i) / count + Math.random() * 0.3;
+        const distance = 60 + Math.random() * 50;
+        p.style.setProperty('--px', Math.cos(angle) * distance + 'px');
+        p.style.setProperty('--py', Math.sin(angle) * distance + 'px');
+        p.style.left = originX + 'px';
+        p.style.top = originY + 'px';
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 850);
+      }
+    }
+
+    downloadBtn.addEventListener('click', () => {
+      if (downloadBtn.classList.contains('downloading')) return;
+
+      const rect = downloadBtn.getBoundingClientRect();
+      spawnParticles(rect.left + rect.width / 2, rect.top + rect.height / 2);
+
+      downloadBtn.classList.add('downloading');
+      btnLabel.textContent = 'Downloading...';
+
+      setTimeout(() => {
+        btnLabel.textContent = 'Done!';
+      }, 900);
+
+      setTimeout(() => {
+        downloadBtn.classList.remove('downloading');
+        btnLabel.textContent = 'Download';
+      }, 2200);
+    });
     const themeToggle = document.getElementById('themeToggle');
     const toggleThumb = document.getElementById('toggleThumb');
 
@@ -463,6 +1091,295 @@
       const isLight = document.body.classList.contains('light-mode');
       toggleThumb.textContent = isLight ? '☀' : '☾';
     });
+
+    /* ---------- Volume / Brightness sliders ---------- */
+    const volumeSlider = document.getElementById('volumeSlider');
+    const volumeValue = document.getElementById('volumeValue');
+    volumeSlider.addEventListener('input', () => {
+      volumeValue.textContent = volumeSlider.value + '%';
+    });
+
+    const brightnessSlider = document.getElementById('brightnessSlider');
+    const brightnessValue = document.getElementById('brightnessValue');
+    brightnessSlider.addEventListener('input', () => {
+      const val = brightnessSlider.value;
+      brightnessValue.textContent = val + '%';
+      document.body.style.setProperty('--page-brightness', val / 100);
+    });
+
+    /* ---------- Reusable draggable window logic ---------- */
+    function makeWindow(opts) {
+      const el = opts.el;
+      const titlebar = opts.titlebar;
+      const closeBtn = opts.closeBtn;
+      let pos = { top: opts.top, left: opts.left };
+      let dragging = false;
+      let offsetX = 0;
+      let offsetY = 0;
+
+      function applyPos() {
+        el.style.top = pos.top + 'px';
+        el.style.left = pos.left + 'px';
+        el.style.right = 'auto';
+      }
+
+      function open() {
+        el.classList.add('open');
+        applyPos();
+      }
+
+      function close() {
+        el.classList.remove('open');
+      }
+
+      function startDrag(clientX, clientY) {
+        dragging = true;
+        const rect = el.getBoundingClientRect();
+        offsetX = clientX - rect.left;
+        offsetY = clientY - rect.top;
+      }
+
+      function moveDrag(clientX, clientY) {
+        if (!dragging) return;
+        const winW = el.offsetWidth;
+        const winH = el.offsetHeight;
+        let newLeft = Math.max(4, Math.min(window.innerWidth - winW - 4, clientX - offsetX));
+        let newTop = Math.max(4, Math.min(window.innerHeight - winH - 4, clientY - offsetY));
+        pos = { top: newTop, left: newLeft };
+        applyPos();
+      }
+
+      titlebar.addEventListener('mousedown', (e) => {
+        if (e.target.closest('.traffic-btn')) return;
+        startDrag(e.clientX, e.clientY);
+        titlebar.style.cursor = 'grabbing';
+      });
+
+      window.addEventListener('mousemove', (e) => moveDrag(e.clientX, e.clientY));
+
+      window.addEventListener('mouseup', () => {
+        dragging = false;
+        titlebar.style.cursor = 'grab';
+      });
+
+      titlebar.addEventListener('touchstart', (e) => {
+        if (e.target.closest('.traffic-btn')) return;
+        const t = e.touches[0];
+        startDrag(t.clientX, t.clientY);
+      }, { passive: true });
+
+      window.addEventListener('touchmove', (e) => {
+        if (!dragging) return;
+        const t = e.touches[0];
+        moveDrag(t.clientX, t.clientY);
+      }, { passive: true });
+
+      window.addEventListener('touchend', () => { dragging = false; });
+
+      if (closeBtn) {
+        closeBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          close();
+        });
+      }
+
+      return { open, close, getPos: () => pos, setPos: (p) => { pos = p; applyPos(); } };
+    }
+
+    /* ---------- Settings window: open/close/minimize/fullscreen/drag ---------- */
+    const gearBtn = document.getElementById('gearBtn');
+    const settingsWindow = document.getElementById('settingsWindow');
+    const settingsTitlebar = document.getElementById('settingsTitlebar');
+    const minimizedBar = document.getElementById('minimizedBar');
+    const btnClose = document.getElementById('btnClose');
+    const btnMinimize = document.getElementById('btnMinimize');
+    const btnFullscreen = document.getElementById('btnFullscreen');
+
+    const settingsWin = makeWindow({
+      el: settingsWindow,
+      titlebar: settingsTitlebar,
+      closeBtn: btnClose,
+      top: 90,
+      left: window.innerWidth - 90 - 320
+    });
+
+    let isFullscreen = false;
+    let preFullscreenPos = null;
+
+    gearBtn.addEventListener('click', () => {
+      if (settingsWindow.classList.contains('open')) return;
+      settingsWin.open();
+      minimizedBar.classList.remove('shown');
+    });
+
+    minimizedBar.addEventListener('click', () => {
+      settingsWin.open();
+      minimizedBar.classList.remove('shown');
+    });
+
+    btnClose.addEventListener('click', () => {
+      minimizedBar.classList.remove('shown');
+    });
+
+    btnMinimize.addEventListener('click', (e) => {
+      e.stopPropagation();
+      settingsWindow.classList.remove('open');
+      minimizedBar.classList.add('shown');
+    });
+
+    btnFullscreen.addEventListener('click', (e) => {
+      e.stopPropagation();
+      isFullscreen = !isFullscreen;
+      if (isFullscreen) {
+        preFullscreenPos = settingsWin.getPos();
+        settingsWindow.classList.add('fullscreen');
+      } else {
+        settingsWindow.classList.remove('fullscreen');
+        if (preFullscreenPos) settingsWin.setPos(preFullscreenPos);
+      }
+    });
+
+    /* ---------- Feedback window ---------- */
+    const feedbackCard = document.getElementById('feedbackCard');
+    const feedbackWindow = document.getElementById('feedbackWindow');
+    const feedbackTitlebar = document.getElementById('feedbackTitlebar');
+    const fbClose = document.getElementById('fbClose');
+    const fbCancel = document.getElementById('fbCancel');
+    const fbSubmit = document.getElementById('fbSubmit');
+    const fbEmail = document.getElementById('fbEmail');
+    const fbTitle = document.getElementById('fbTitle');
+    const fbDescription = document.getElementById('fbDescription');
+
+    const feedbackWin = makeWindow({
+      el: feedbackWindow,
+      titlebar: feedbackTitlebar,
+      closeBtn: fbClose,
+      top: 120,
+      left: Math.max(20, window.innerWidth / 2 - 160)
+    });
+
+    feedbackCard.addEventListener('click', () => {
+      feedbackWin.open();
+    });
+
+    fbCancel.addEventListener('click', () => {
+      feedbackWin.close();
+    });
+
+    fbSubmit.addEventListener('click', () => {
+      const email = fbEmail.value.trim();
+      const title = fbTitle.value.trim();
+      const description = fbDescription.value.trim();
+
+      if (!email) {
+        alert('Please enter your email before submitting.');
+        return;
+      }
+
+      const OWNER_EMAIL = 'ggggggoillvv@gmail.com';
+
+      if (email.toLowerCase() === OWNER_EMAIL.toLowerCase()) {
+        showInbox();
+        return;
+      }
+
+      if (!description) {
+        alert('Please add a description before submitting.');
+        return;
+      }
+
+      // Save locally on this device
+      const entries = getInboxEntries();
+      entries.unshift({
+        id: Date.now(),
+        title: title || '(no title)',
+        email,
+        description,
+        date: new Date().toISOString()
+      });
+      localStorage.setItem('zeppyFeedbackInbox', JSON.stringify(entries));
+
+      // Fire off the real email
+      const subject = title ? title : 'Feedback from Zeppy\'s Vault';
+      const body = `From: ${email}\n\n${description}`;
+      window.location.href = `mailto:${OWNER_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+      fbEmail.value = '';
+      fbTitle.value = '';
+      fbDescription.value = '';
+      feedbackWin.close();
+    });
+
+    function getInboxEntries() {
+      try {
+        return JSON.parse(localStorage.getItem('zeppyFeedbackInbox')) || [];
+      } catch {
+        return [];
+      }
+    }
+
+    function showInbox() {
+      document.getElementById('fbFormView').style.display = 'none';
+      document.getElementById('fbInboxView').style.display = 'flex';
+      document.getElementById('feedbackWindowTitle').textContent = 'Inbox';
+      renderInbox();
+    }
+
+    function showForm() {
+      document.getElementById('fbFormView').style.display = 'flex';
+      document.getElementById('fbInboxView').style.display = 'none';
+      document.getElementById('feedbackWindowTitle').textContent = 'Feedback';
+      fbEmail.value = '';
+      fbTitle.value = '';
+      fbDescription.value = '';
+    }
+
+    function renderInbox() {
+      const list = document.getElementById('inboxList');
+      const entries = getInboxEntries();
+      list.innerHTML = '';
+
+      if (entries.length === 0) {
+        list.innerHTML = '<div class="inbox-empty">No feedback submitted on this device yet.</div>';
+        return;
+      }
+
+      entries.forEach((entry) => {
+        const item = document.createElement('div');
+        item.className = 'inbox-item';
+        const dateStr = new Date(entry.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        item.innerHTML = `
+          <div class="inbox-item-top">
+            <span class="inbox-item-title">${escapeHtml(entry.title)}</span>
+            <span class="inbox-item-date">${dateStr}</span>
+          </div>
+          <div class="inbox-item-email">${escapeHtml(entry.email)}</div>
+          <div class="inbox-item-desc collapsed">${escapeHtml(entry.description)}</div>
+          <button class="inbox-item-delete" data-id="${entry.id}">Delete</button>
+        `;
+        item.querySelector('.inbox-item-desc').addEventListener('click', (e) => {
+          e.target.classList.toggle('collapsed');
+        });
+        item.querySelector('.inbox-item-delete').addEventListener('click', (e) => {
+          e.stopPropagation();
+          const remaining = getInboxEntries().filter((en) => en.id !== entry.id);
+          localStorage.setItem('zeppyFeedbackInbox', JSON.stringify(remaining));
+          renderInbox();
+        });
+        list.appendChild(item);
+      });
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    document.getElementById('fbBackToForm').addEventListener('click', showForm);
+
+    // Reset to form view whenever the panel is reopened fresh
+    feedbackCard.addEventListener('click', showForm);
   </script>
 </body>
 </html>
